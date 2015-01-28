@@ -28,6 +28,8 @@
         <p class="nav-space" ng-if="!selected.preview.headline && !lock"></p>
         
         <div class="state-label state-{{selected.preview.state}}">{{selected.preview.state}}</div>
+        
+        <div ng-show="selected.preview.highlights"><i class="icon-star-color" alt="{{selected.preview.highlights}}"></i></div>
 
         <div class="core-content">
 
@@ -36,6 +38,7 @@
 			</p>
             
             <!-- item rendition -->
+            
             <div class="picture-preview" sd-item-rendition data-item="selected.preview" data-rendition="viewImage"></div>
             
             <div ng-if="selected.preview.type == 'audio'">
