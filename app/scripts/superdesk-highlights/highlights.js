@@ -15,15 +15,24 @@
     /**
      * Service for highlights with caching.
      */
-    HighlightsService.$inject = ['api', '$q', '$cacheFactory'];
-    function HighlightsService(api, $q, $cacheFactory) {
+    HighlightsService.$inject = ['api', '$q', '$cacheFactory', 'packagesService'];
+    function HighlightsService(api, $q, $cacheFactory, packagesService) {
     	var service = {};
         var cache = $cacheFactory('highlightList');
+
+        service.createEmptyHighlight = function createEmptyHighlight(highlight) {
+            var pkg_defaults = {
+                headline: highlight.name,
+                highlight: highlight._id
+            };
+
+            return packagesService.createEmptyPackage(pkg_defaults);
+        };
 
         /**
          * Fetches and caches highlights, or returns from the cache.
          */
-       service.get = function(desk) {
+        service.get = function(desk) {
     	   var DEFAULT_CACHE_KEY = '_nodesk';
            var key = desk || DEFAULT_CACHE_KEY;
 
@@ -52,26 +61,27 @@
         };
 
         /**
-         * Mark an item for a highlights list
+         * Mark an item for a highlight
          */
-        service.mark_item = function mark_item(highlights, marked_item) {
-            return api.markForHighlights.create({highlights: highlights, marked_item: marked_item})
+        service.mark_item = function mark_item(highlight, marked_item) {
+            console.log('create highlight', highlights, marked_item);
+            return api.markForHighlights.create({highlight: highlight, marked_item: marked_item})
             	.then(function(result) {
-            		console.log('item is marked');
+                    return result;
             	});
         };
 
         return service;
     }
 
-    HighlightsDropdownCtrl.$inject = ['$scope', 'highlightService', 'packagesService'];
-    function HighlightsDropdownCtrl($scope, highlightService, packagesService) {
-    	highlightService.get($scope.item.task.desk).then(function(result) {
+    HighlightsDropdownCtrl.$inject = ['$scope', 'highlightsService', 'packagesService'];
+    function HighlightsDropdownCtrl($scope, highlightsService, packagesService) {
+    	highlightsService.get($scope.item.task.desk).then(function(result) {
 	    	$scope.highlights = result._items;
 	    });
 
         $scope.mark_item = function mark_item(highlight) {
-        	highlightService.mark_item(highlight._id, $scope.item._id);
+        	highlightsService.mark_item(highlight._id, $scope.item._id);
         };
 
         $scope.createEmptyHighlight = function createEmptyHighlight(highlight) {
@@ -91,7 +101,12 @@
     ]);
 
     app
-    .service('highlightService', HighlightsService)
+    .service('highlightsService', HighlightsService)
+    .directive('highlightsDropdown', function() {
+        return {
+            templateUrl: require.toUrl('./superdesk-highlights/views/highlights_dropdown.html')
+        };
+    })
     .config(['superdeskProvider', function(superdesk) {
         superdesk
 	    .activity('mark.item', {
@@ -99,7 +114,6 @@
             priority: 30,
         	icon: 'pick',
         	dropdown: true,
-        	templateUrl: require.toUrl('./superdesk-highlights/views/highlights_dropdown.html'),
         	filters: [
                 {action: 'list', type: 'archive'}
             ],
@@ -109,8 +123,8 @@
         })
         .activity('create.highlight', {
             label: gettext('Create highlight'),
-            controller: ['data', '$location', 'highlightsService', 'superdesk',
-                function(data, $location, highlightsService, superdesk) {
+            controller: ['data', 'highlightsService', 'superdesk',
+                function(data, highlightsService, superdesk) {
                     highlightsService.createEmptyHighlight(data).then(
                         function(new_package) {
                             superdesk.intent('author', 'package', new_package);

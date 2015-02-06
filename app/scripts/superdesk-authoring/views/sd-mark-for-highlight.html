@@ -1,0 +1,5 @@
+<li ng-repeat="highlight_config in highlight_configs">
+    <button ng-click="highlightsService.mark_item(highlight_config, item)">
+        <i class="icon-plus-small icon-round icon-white"></i> {{ :: highlight_config.name }}
+    </button>
+</li>

@@ -3,12 +3,12 @@
         <i class="icon-{{ :: activity.icon }}" ng-show=":: activity.icon"></i>
         <span>{{ :: activity.label | translate }}</span>
     </a>
-	<div ng-if=":: activity.dropdown" class="dropdown" dropdown>
+	<div ng-if=":: activity.dropdown" class="dropdown" dropdown tooltip="{{ :: 'Mark for highlight' | translate }}" tooltip-placement="right">
 	    <a ng-href="{{ :: $root.link(activity._id, item) }}" class="dropdown-toggle" dropdown-toggle>
 		    <i class="icon-{{ :: activity.icon }}" ng-show=":: activity.icon"></i>
 	        <span>{{ :: activity.label | translate }}</span>
 	    </a>
-	    <ul class="dropdown-menu pull-right" ng-include="activity.templateUrl">
+	    <ul class="dropdown-menu pull-right" highlights-dropdown>
 	    </ul>
 	</div>
 </li>

@@ -50,6 +50,10 @@ function ContentCtrlFactory(api, superdesk) {
         this.createHighlight = function createHighlight(highlight_config) {
             superdesk.intent('create', 'highlight', highlight_config);
         };
+
+        this.markForHighlight = function markForHighlight(highlight_config) {
+            superdesk.intent('mark', 'highlight', highlight_config);
+        };
     };
 }
 

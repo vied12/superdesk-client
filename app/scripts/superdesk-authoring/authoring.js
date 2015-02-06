@@ -851,6 +851,12 @@
         };
     }
 
+    function MarkForHighlightDirective() {
+        return {
+            templateUrl: 'scripts/superdesk-authoring/views/sd-highlight-create.html'
+        };
+    }
+
     return angular.module('superdesk.authoring', [
             'superdesk.editor',
             'superdesk.activity',
@@ -861,7 +867,8 @@
             'superdesk.authoring.workqueue',
             'superdesk.authoring.packages',
             'superdesk.authoring.find-replace',
-            'superdesk.desks'
+            'superdesk.desks',
+            'superdesk.highlights'
         ])
 
         .service('authoring', AuthoringService)
@@ -877,6 +884,7 @@
         .directive('sdThemeSelect', ThemeSelectDirective)
         .directive('sdContentCreate', ContentCreateDirective)
         .directive('sdHighlightCreate', HighlightCreateDirective)
+        .directive('sdMarkForHighlight', MarkForHighlightDirective)
 
         .config(['superdeskProvider', function(superdesk) {
             superdesk
