@@ -1,7 +1,11 @@
-require(['angular', 'lodash'], function(angular, _) {
+require([
+    'angular',
+    'lodash',
+    'superdesk/services/preferencesService'
+], function(angular, _) {
     'use strict';
 
-    angular.module('superdesk.widgets.base', [])
+    angular.module('superdesk.widgets.base', ['superdesk.preferences'])
         .factory('BaseWidgetController', ['$location', '$timeout', 'superdesk', 'search', 'preferencesService', 'notify',
         function BaseWidgetControllerFactory($location, $timeout, superdesk, search, preferencesService, notify) {
 
